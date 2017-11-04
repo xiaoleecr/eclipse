@@ -1,0 +1,5 @@
+绘制图形
+1画板上画画（支撑，JFrame）
+2纸，或者画布（JPanel）
+3按钮（JButton）
+4文本框（JText）

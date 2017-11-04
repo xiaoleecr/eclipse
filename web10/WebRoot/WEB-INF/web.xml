@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  	<servlet>
+  		<servlet-name>a3</servlet-name>
+  		<jsp-file>/a3.jsp</jsp-file>
+  		<!-- 配置初始化参数 -->
+  		<init-param>
+  			<param-name>company</param-name>
+  			<param-value>小米</param-value>
+  		</init-param>
+  	</servlet>
+  <servlet>
+    <servlet-name>ListUsersServlet</servlet-name>
+    <servlet-class>web.ListUsersServlet</servlet-class>
+  </servlet>
+
+  	<servlet-mapping>
+  		<servlet-name>a3</servlet-name>
+  		<url-pattern>/abc.html</url-pattern>
+  	</servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ListUsersServlet</servlet-name>
+    <url-pattern>/list</url-pattern>
+  </servlet-mapping>
+</web-app>

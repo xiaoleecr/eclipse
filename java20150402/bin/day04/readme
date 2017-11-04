@@ -1,0 +1,14 @@
+捕鱼达人
+界面有什么？
+1鱼（Fish）
+	图片fish（BufferedImage）
+	坐标x，y
+	速度speed（int）
+2鱼池（Pool）
+	背景bg（BufferedImage）
+	鱼
+	网
+	……
+3渔网（Net）
+	图片netImage（BufferedImage）
+	坐标x,y

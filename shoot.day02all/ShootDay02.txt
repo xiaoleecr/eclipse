@@ -1,0 +1,421 @@
+回顾:
+1.class FlyingObject{
+     image,width,height,x,y
+   }
+2.interface Enemy{
+     int getScore();
+  }
+3.interface Award{
+     DOUBLE_FIRE,LIFT
+     int getType();
+  }
+4.class Airplane extends 1 implements 2{
+     speed
+     Airplane(){}
+     重写getScore();
+   }
+5.class Bee extends 1 implements 3{
+     xSpeed,ySpeed,awardType
+     Bee(){}
+     重写getType(); 
+   }
+6.class Bullet extends 1{
+     speed
+     Bullet(int x,int y){}
+   }
+7.class Hero extends 1{
+     life,doubleFire,images,index
+     Hero(){}
+   }
+8.class ShootGame extends JPanel{
+     WIDTH,HEIGHT---常量
+     background,start,pause,gameover
+     airplane,bee,bullet,hero0,hero1----静态变量
+     hero(Hero),flyings(FlyingObject[]),bullets(Bullet[])
+     ShootGame(){ 初始化对象 }
+     
+     static{} 
+     重写paint(g){
+        画背景图，画英雄机对象，画敌人对象，画子弹对象
+     }
+     paintHero(g){}
+     paintFlyingObjects(g){}
+     paintBullets(g){}
+     main(){
+       ...
+       frame.setVisible(true); //1.可见 2.尽快调paint()
+     }
+   }
+
+
+
+正课:
+1.敌人(敌机+小蜜蜂)入场
+2.飞行物(敌机+小蜜蜂+英雄机+子弹)走步
+3.子弹入场
+4.英雄机随着鼠标动
+5.子弹与敌人撞
+
+
+
+
+
+
+
+//一堆子弹和一堆敌人撞
+public void bangAction(){
+  for(int i=0;i<bullets.length;i++){
+    bang(bullets[i]);
+  }
+}
+
+int score = 0; //得分
+//一个子弹和一堆敌人撞
+public void bang(Bullet b){
+  int index = -1; //被撞敌人下标
+  for(int i=0;i<flyings.length;i++){
+    FlyingObject f = flyings[i];
+    if(f.shootBy(b)){
+      index = i;  //记录被撞敌人下标
+      break;
+    }
+  }
+  if(index != -1){  //有被撞的敌人
+    FlyingObject obj = flyings[index]; //获取被撞的敌人对象
+    if(obj instanceof Enemy){  //敌人
+      Enemy e = (Enemy)obj;
+      score += e.getScore();
+    }
+    if(obj instanceof Award){
+      Award a = (Award)obj;
+      int type = a.getType();
+      switch(type){
+        case Award.DOUBLE_FIRE:
+          hero.addDoubleFire();
+          break;
+        case Award.LIFE:
+          hero.addLife();
+          break;
+      }
+    }
+    
+    FlyingObject t = flyings[index];
+    flyings[index] = flyings[flyings.length-1];
+    flying[flyings.length-1] = t;
+    flyings = Arrays.copyOf(flyings,flyings.length-1);
+    
+    
+  }
+}
+
+class Hero{
+  public void addLife(){
+    life++;
+  }
+  public void addDoubleFire(){
+    doubleFire += 40;
+  }
+}
+
+
+
+
+
+
+
+
+class FlyingObject{  //敌人
+  public boolean shootBy(Bullet obj){
+    this:敌人
+    obj:子弹
+  }
+}
+class Bullet{  //子弹
+  public boolean shoot(FlyingObject obj){
+    this:子弹
+    obj:敌人
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+英雄机随着鼠标动:----并非定时触发
+
+英雄机移动move
+
+
+
+swing:
+事件:发生了一个事
+事件处理:发生事之后所做的响应
+
+侦听:关联事件和事件的处理
+1)做一个侦听器
+2)把侦听器装到你们家
+3)只要你家有声音，我就能听得到
+
+swing中的事件:
+1.鼠标点击(点击面板)
+2.鼠标移动(在面板上动)
+3.鼠标移出(移出面板)
+4.鼠标移入(移入面板)
+
+MouseListener:鼠标操作事件
+  鼠标点击、鼠标移入、鼠标移出
+MouseMotionListener:鼠标滑动事件
+  鼠标移动
+
+1.创建侦听器对象  
+MouseListener ml = new MouseListener();
+MouseMotionListener mml = new MouseMotionListener();
+2.将侦听器对象添加到面板上
+this.addMouseListener();
+this.addMouseMotionListener(mml); 
+
+MouseListener ml = new MouseListener(){
+  鼠标点击-----
+  鼠标按下
+  鼠标弹起
+  鼠标移入-----
+  鼠标移出-----
+};
+this.addMouseListener(ml);
+
+MouseMotionListener mml = new MouseMotionListener(){
+  鼠标移动-----
+  鼠标拖拽
+};
+this.addMouseMotionListener(mml); 
+
+
+abstract class MouseAdapter implements ML,MML{
+  鼠标点击(){ }
+  鼠标按下(){ }
+  鼠标弹起(){ }
+  鼠标移入(){ }
+  鼠标移出(){ }
+  鼠标移动(){ }
+  鼠标拖拽(){ }
+}
+
+MouseAdapter l = new MouseAdapter(){
+  
+};
+this.addMouseListener(l);
+this.addMouseMotionListener(l);
+
+
+
+
+敌人入场:
+1.创建敌人(敌机+小蜜蜂)对象
+2.将敌人对象添加到flyings数组中
+
+
+子弹入场:
+1.创建子弹对象
+2.将子弹对象添加到bullets数组中
+
+if(shootIndex%30==0){
+  Bullet[] bs = hero.shoot(); //获取子弹对象
+  bullets = Arrays.copyOf(bullets,bullets.length+bs.length);
+  System.arraycopy(bs,0,bullets,bullets.length-bs.length,bs.length); //追加数组
+}
+
+
+语法基础
+每周一
+
+
+
+
+
+
+子弹是英雄机发射出来的
+
+
+
+
+
+FlyingObject[] flyings = {};  
+if(index%40==0){ //400毫秒
+  FlyingObject obj = nextOne(); //创建对象
+  flyings = Arrays.copyOf(flyings,flyings.length+1);
+  flyings[flyings.length-1] = obj; //添加到flyings数组中
+}
+
+5+xSpeed------7
+5+(-xSpeed)----3
+
+
+paint()方法有两种调用方式:
+1.frame.setVisible(true);  //
+2.repaint();
+
+
+
+
+
+
+
+定时器: 每隔300毫秒生成一个敌人对象
+
+abstract class TimerTask{
+}
+class Aoo extends TimerTask{
+}
+TimerTask tt = new Aoo();
+向上造型
+
+
+
+timer.schedule(new TimerTask(){
+  public void run(){  //每隔10毫秒执行一次
+    System.out.println("HelloWorld");
+  }
+},10,10);
+
+
+
+10:程序开始到第一次定时触发的间隔
+100:第一次定时到第二次定时的间隔
+     第二次定时到第三次定时的间隔
+
+
+
+
+
+//创建敌人对象(工厂方法)
+public static FlyingObject nextOne(){
+  
+}
+
+
+
+
+
+
+
+
+
+
+正课:
+1.敌人(敌机+小蜜蜂)入场
+2.飞行物(敌机+小蜜蜂+英雄机+子弹)走步
+3.子弹入场
+4.英雄机随着鼠标动
+5.子弹与敌人撞
+
+
+
+1.敌人入场的实现步骤:
+  1)main(){ game.action(); }
+  2)action(){
+      ...
+      run(){ //10毫秒定时执行
+        enteredAction(); //敌人入场
+	     repaint(); //调paint()方法
+      }
+    }
+  3)int index = 0;
+    enteredAction(){ //10毫秒
+      index++;
+      if(index%40==0){  //40*10毫秒
+        FlyingObject one = nextOne(); //创建一个敌人对象
+        flyings = Arrays.copyOf(flyings,flyings.length+1); //扩容
+        flyings[flyings.length-1] = one; //将敌人对象添加到敌人数组中
+      }
+    }
+  4)nextOne(){
+      生成0到19间的随机数
+      为0时return new Bee();
+      否则return new Airplane();
+    }
+2.飞行物走步的实现步骤:
+  1)FlyingObject----抽象方法step();
+  2)Airplane,Bee,Bullet,Hero---重写step()
+  3)action(){
+      run(){
+        enterAction();
+	     stepAction();
+	     repaint(); //重画
+      }
+    }
+  4)stepAction(){
+      遍历所有敌人,调用step()
+      遍历所有子弹,调用step()
+      hero.step();
+    }
+3.子弹入场的实现步骤:
+  1)Hero---shoot()英雄机发射子弹
+  2)action(){
+      run(){
+        ...
+	     shootAction(); //发射子弹
+	     repaint();
+      }
+    }
+  3)int shootIndex = 0;
+    shootAction(){ //10毫秒走一次
+      shootIndex++;
+      if(shootIndex%30==0){ //300毫秒
+         调用Hero的shoot()得到发射出的子弹数组bs
+	      将bullets扩容
+	      将bs追加到bullets数组中--System.arraycopy()
+      }
+    }
+4.英雄机随着鼠标移动的实现步骤:
+  1)Hero---moveTo(int x,int y)
+  2)action(){
+      MouseAdapter l = new MouseAdapter(){
+         重写MouseMoved(MouseEvent e){
+	          获取鼠标的x和y
+	          hero.moveTo(x,y); //移动
+	       }
+      };
+      this.addMouseMotionListener(l);
+      this.addMouseListener(l);
+      
+      run(){
+        ...
+      }
+    }
+5.子弹和敌人碰撞的实现步骤:
+  1)FlyingObject----shootBy(Bullet b)
+  2)Hero----addDoubleFire(),addLife()
+  3)action(){
+      run(){
+        ...
+	     bangAction(); //检查碰撞
+	     repaint();
+      }
+    }
+  4)bangAction(){
+      遍历所有子弹，将子弹传给bang()方法
+    }
+  5)bang(Bullet b){ //1发子弹与所有敌人撞
+      遍历所有敌人，获取每一个敌人f
+      判断f是否与b撞上了
+      若撞上了:
+        5.1)得分或得奖励
+	       5.1.1)得到被撞敌人对象
+	       5.1.2)判断是敌人还是奖励
+	                若是敌人则增分
+		             若是奖励则得奖励类型
+		               判断不同的奖励类型：
+		                  增命或增火力值
+	     5.2)将被撞对象从flyings中删除
+	       5.2.1)将被撞敌人与最后一个元素交换(追尾并绕圈)
+	       5.2.2)缩容---删除最后一个元素(被撞的对象)
+    }
+
+
