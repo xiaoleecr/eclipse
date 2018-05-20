@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lcr.mapper.StudentMapper">
+	<select id="findStuById" parameterType="int" resultType="cn.lcr.entity.Student">
+		select sid,sname,score from Stu where sid=#{sid}
+	</select>
+	<insert id="addStu" parameterType="cn.lcr.entity.Student">
+		<selectKey keyProperty="sid" order="AFTER" resultType="int">
+			select seq_stu.currval from dual
+		</selectKey>
+		insert into Stu(sname,score) values(#{sname},#{sscore})
+	</insert>
+	<delete id="deleteStuById" parameterType="int" >
+		delete from Stu where sid=#{id}
+	</delete>
+	<update id="updateStu" parameterType="cn.lcr.entity.Student">
+		update Stu set sname=#{sname},score=#{sscore} where sid=#{sno}
+	</update>
+</mapper>
